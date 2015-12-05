@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using GameClient.Network.Communicator;
 using GameClient.Network.Messages;
-
+using UnityEngine;
 namespace GameClient.GameDomain
 {
     /*
@@ -19,9 +19,13 @@ namespace GameClient.GameDomain
 
         public GameWorldState State { get { return state; }
             set {
-                state = value;
+
+				if(state == value) //no change in state
+					return;
+				state = value;
                 if (state == GameWorldState.Finished)
                 {
+
                     EventHandler handler = GameWorld.Instance.GameFinished;
                     if (handler != null)
                     {
@@ -32,6 +36,7 @@ namespace GameClient.GameDomain
                 }
                 else if (state == GameWorldState.Running)
                 {
+
                     EventHandler handler = GameWorld.Instance.GameStarted;
                     if (handler != null)
                     {
@@ -87,6 +92,8 @@ namespace GameClient.GameDomain
 
         private GameWorldState state = GameWorldState.NotStarted;
 
+        public event EventHandler FrameAdvanced; 
+
         /*
             Advance the gameworld to next frame
         */
@@ -101,6 +108,14 @@ namespace GameClient.GameDomain
                 coin.AdvanceFrame();
             }
             InputAllowed = true;
+
+            EventHandler handler = FrameAdvanced;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
+
+
         }
 
         /*

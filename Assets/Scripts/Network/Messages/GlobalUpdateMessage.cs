@@ -18,9 +18,10 @@ namespace GameClient.Network.Messages
         //Apply the message's effect to GameWorld
         public override void Execute()
         {
-            GameWorld.Instance.State = GameWorld.GameWorldState.Running;
+            
             GameWorld.Instance.BrickState = globalUpdate.brickUpdate;
             GameWorld.Instance.Players = globalUpdate.PlayerUpdates;
+			GameWorld.Instance.State = GameWorld.GameWorldState.Running; //Triggers Game Started as well
             GameWorld.Instance.AdvanceFrame();
             
         }

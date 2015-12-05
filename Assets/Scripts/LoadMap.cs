@@ -8,6 +8,8 @@ public class LoadMap : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		GameClient.GameDomain.GameWorld.Instance.MapLoaded += HandleMapLoaded;
+
+        
 	}
 
 	void HandleMapLoaded (object sender, System.EventArgs e)
@@ -45,6 +47,23 @@ public class LoadMap : MonoBehaviour {
 
 			
 		}
+
+        
+        foreach (Coordinate brickPos in mapDetails.Brick)
+        {
+            string name = "World/Ground/R" + (brickPos.X + 1).ToString() + "/C" + (brickPos.Y + 1).ToString();
+            GameObject cell = GameObject.Find(name);
+
+            GameObject BrickWall = GameObject.Instantiate(Resources.Load("BrickWallContainer")) as GameObject;
+
+            Transform cellTransform = cell.transform;
+            BrickWall.transform.SetParent(cell.transform, false);
+
+            UIReferenceMap.Instance.BrickWallContainers["R" + (brickPos.X + 1).ToString() + "/C" + (brickPos.Y + 1).ToString()] = BrickWall;
+
+
+
+        }
 	}
 	
 	// Update is called once per frame
