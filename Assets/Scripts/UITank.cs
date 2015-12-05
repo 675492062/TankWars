@@ -9,8 +9,8 @@ public class UITank
 	{
 	}
 
-	public const float TANK_SPEED = 50f;
-	public const float TANK_ROTATION_SPEED = 5f;
+	public const float TANK_SPEED = 1f;
+	public const float TANK_ROTATION_SPEED = 180f;
 
 	//index = index of tank in GameWorld.Tanks
 	public static void loadTank(int i)

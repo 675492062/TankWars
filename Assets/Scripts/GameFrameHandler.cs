@@ -27,15 +27,8 @@ public class GameFrameHandler : MonoBehaviour {
 			//TODO: setup animations here
 			Transform cellTransform = cell.transform;
 
-			Vector3 target = cell.transform.position;
-			Vector3 current = playerGameObject.transform.position;
-
-			Vector3 newPosition = Vector3.MoveTowards(current,target,UITank.TANK_SPEED * Time.deltaTime);
-
-			playerGameObject.transform.position = newPosition;
-
 			playerGameObject.transform.SetParent(cellTransform, true);
-			playerGameObject.transform.rotation = Quaternion.AngleAxis(UIHelper.DirectionToAngle(playerDetails.Direction),new Vector3(0,1,0));
+
 			Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
 
 
@@ -92,6 +85,44 @@ public class GameFrameHandler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    
+		GameClient.GameDomain.GameWorld world = GameClient.GameDomain.GameWorld.Instance;
+		if (world.Players == null)
+			return;
+		if (UIReferenceMap.Instance.Players == null)
+			return;
+
+		for (int i = 0; i < world.Players.Length; i++) {
+			GameClient.GameDomain.PlayerDetails playerDetails = world.Players[i];
+			if(i >= UIReferenceMap.Instance.Players.Count)
+			{
+				return;
+			}
+			GameObject playerGameObject = UIReferenceMap.Instance.Players[i];
+			
+			//find new container
+			string name = UIHelper.GenerateCellAddress(playerDetails.Position);
+			GameObject cell = GameObject.Find(name);
+			
+			//move by changing parent
+			//TODO: setup animations here
+			Transform cellTransform = cell.transform;
+			
+			Vector3 ptarget = cell.transform.position;
+			Vector3 pcurrent = playerGameObject.transform.position;
+			
+			Vector3 newPosition = Vector3.MoveTowards(pcurrent,ptarget,UITank.TANK_SPEED * Time.deltaTime);
+			
+			playerGameObject.transform.position = newPosition;
+
+			Quaternion qCurrent = playerGameObject.transform.rotation;
+			Quaternion qTarget = Quaternion.AngleAxis(UIHelper.DirectionToAngle(playerDetails.Direction),new Vector3(0,1,0));
+			Quaternion newRotation = Quaternion.RotateTowards(qCurrent,qTarget,UITank.TANK_ROTATION_SPEED * Time.deltaTime);
+
+
+			playerGameObject.transform.rotation = newRotation;
+
+			
+			
+		}
 	}
 }
