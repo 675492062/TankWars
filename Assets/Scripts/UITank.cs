@@ -9,6 +9,8 @@ public class UITank
 	{
 	}
 
+	public const float TANK_SPEED = 50f;
+	public const float TANK_ROTATION_SPEED = 5f;
 
 	//index = index of tank in GameWorld.Tanks
 	public static void loadTank(int i)
@@ -16,7 +18,7 @@ public class UITank
 		GameWorld world = GameWorld.Instance;
 		PlayerDetails player = world.Players[i];
 		
-		string name = "World/Ground/R" + (player.Position.X+1).ToString() + "/C" + (player.Position.Y+1).ToString();
+		string name = UIHelper.GenerateCellAddress (player.Position);
 		
 		GameObject cell = GameObject.Find(name);
 		

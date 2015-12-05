@@ -17,7 +17,7 @@ public class LoadMap : MonoBehaviour {
 		//load the map
 		GameClient.GameDomain.MapDetails mapDetails = GameClient.GameDomain.GameWorld.Instance.Map;
 		foreach (Coordinate waterPos in mapDetails.Water) {
-			string name = "World/Ground/R" + (waterPos.X+1).ToString() + "/C" + (waterPos.Y+1).ToString();
+			string name = UIHelper.GenerateCellAddress(waterPos);
 			GameObject cell = GameObject.Find(name);
 
 			Transform cellTransform = cell.transform;
@@ -37,7 +37,7 @@ public class LoadMap : MonoBehaviour {
 		}
 
 		foreach (Coordinate stonePos in mapDetails.Stone) {
-			string name = "World/Ground/R" + (stonePos.X+1).ToString() + "/C" + (stonePos.Y+1).ToString();
+			string name = UIHelper.GenerateCellAddress(stonePos);
 			GameObject cell = GameObject.Find(name);
 
 			GameObject StoneWall = GameObject.Instantiate(Resources.Load("StoneWall")) as GameObject;
@@ -51,7 +51,7 @@ public class LoadMap : MonoBehaviour {
         
         foreach (Coordinate brickPos in mapDetails.Brick)
         {
-            string name = "World/Ground/R" + (brickPos.X + 1).ToString() + "/C" + (brickPos.Y + 1).ToString();
+            string name = UIHelper.GenerateCellAddress(brickPos);
             GameObject cell = GameObject.Find(name);
 
             GameObject BrickWall = GameObject.Instantiate(Resources.Load("BrickWallContainer")) as GameObject;
@@ -59,7 +59,7 @@ public class LoadMap : MonoBehaviour {
             Transform cellTransform = cell.transform;
             BrickWall.transform.SetParent(cell.transform, false);
 
-            UIReferenceMap.Instance.BrickWallContainers["R" + (brickPos.X + 1).ToString() + "/C" + (brickPos.Y + 1).ToString()] = BrickWall;
+            UIReferenceMap.Instance.BrickWallContainers[UIHelper.GenerateKey(brickPos)] = BrickWall;
 
 
 

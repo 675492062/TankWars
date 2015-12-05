@@ -20,13 +20,21 @@ public class GameFrameHandler : MonoBehaviour {
 			GameObject playerGameObject = UIReferenceMap.Instance.Players[i];
 
 			//find new container
-			string name = "World/Ground/R" + (playerDetails.Position.X + 1).ToString() + "/C" + (playerDetails.Position.Y + 1).ToString(); ;
+			string name = UIHelper.GenerateCellAddress(playerDetails.Position);
 			GameObject cell = GameObject.Find(name);
 
 			//move by changing parent
 			//TODO: setup animations here
 			Transform cellTransform = cell.transform;
-			playerGameObject.transform.SetParent(cellTransform, false);
+
+			Vector3 target = cell.transform.position;
+			Vector3 current = playerGameObject.transform.position;
+
+			Vector3 newPosition = Vector3.MoveTowards(current,target,UITank.TANK_SPEED * Time.deltaTime);
+
+			playerGameObject.transform.position = newPosition;
+
+			playerGameObject.transform.SetParent(cellTransform, true);
 			playerGameObject.transform.rotation = Quaternion.AngleAxis(UIHelper.DirectionToAngle(playerDetails.Direction),new Vector3(0,1,0));
 			Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
 
@@ -46,7 +54,7 @@ public class GameFrameHandler : MonoBehaviour {
         GameClient.GameDomain.GameWorld world = GameClient.GameDomain.GameWorld.Instance;
         foreach (GameClient.GameDomain.Brick brick in world.BrickState)
         {
-			GameObject container = UIReferenceMap.Instance.BrickWallContainers["R" + (brick.Postition.X + 1).ToString() + "/C" + (brick.Postition.Y + 1).ToString()];
+			GameObject container = UIReferenceMap.Instance.BrickWallContainers[UIHelper.GenerateKey(brick.Postition)];
             //string name = "World/Ground/R" + (brick.Postition.X + 1).ToString() + "/C" + (brick.Postition.Y + 1).ToString() + "/BrickWall100"; ;
             //GameObject cell = GameObject.Find(name);
 
