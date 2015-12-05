@@ -8,9 +8,36 @@ public class GameFrameHandler : MonoBehaviour {
         GameClient.GameDomain.GameWorld.Instance.FrameAdvanced += OnFrameAdvanced;
 	}
 
+	void updateTanks ()
+	{
+		GameClient.GameDomain.GameWorld world = GameClient.GameDomain.GameWorld.Instance;
+		for (int i = 0; i < world.Players.Length; i++) {
+			GameClient.GameDomain.PlayerDetails playerDetails = world.Players[i];
+			if(i >= UIReferenceMap.Instance.Players.Count)
+			{
+				UITank.loadTank(i);
+			}
+			GameObject playerGameObject = UIReferenceMap.Instance.Players[i];
+
+			//find new container
+			string name = "World/Ground/R" + (playerDetails.Position.X + 1).ToString() + "/C" + (playerDetails.Position.Y + 1).ToString(); ;
+			GameObject cell = GameObject.Find(name);
+
+			//move by changing parent
+			//TODO: setup animations here
+			Transform cellTransform = cell.transform;
+			playerGameObject.transform.SetParent(cellTransform, false);
+			playerGameObject.transform.rotation = Quaternion.AngleAxis(UIHelper.DirectionToAngle(playerDetails.Direction),new Vector3(0,1,0));
+			Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
+
+
+		}
+	}
+
     void OnFrameAdvanced(object sender, System.EventArgs e)
     {
         updateBrickwalls();
+		updateTanks ();
 
     }
 
