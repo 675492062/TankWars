@@ -10,7 +10,13 @@ public class UIHelper{
 	{
 
 	}
-	public static float DirectionToAngle(Direction direction)
+
+	public static void TransmitMessage(GameClient.Network.Messages.ClientMessage message)
+	{
+		GameClient.Network.Communicator.Communicator.Instance.SendMessage (message.GenerateStringMessage ());
+	}
+
+	 public static float DirectionToAngle(Direction direction)
 	{
 		switch (direction) {
 		case Direction.North:

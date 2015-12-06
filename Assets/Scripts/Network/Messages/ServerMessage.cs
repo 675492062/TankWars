@@ -9,7 +9,7 @@ namespace GameClient.Network.Messages
         The parent type of the object returned by a specialization of ServerMessageParser
         A parsed Server Originated Message
     */
-    public abstract class ServerMessage
+    public abstract class ServerMessage : AbstractMessage
     {
         //Apply the effects of the message to game world
         public abstract void Execute();

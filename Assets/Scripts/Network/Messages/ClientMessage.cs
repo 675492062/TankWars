@@ -9,7 +9,7 @@ namespace GameClient.Network.Messages
     /*
     A message to be sent from client to server
     */
-    abstract class ClientMessage : AbstractMessage
+    public abstract class ClientMessage : AbstractMessage
     {
         /*
         Obrain a string representation of Client Message

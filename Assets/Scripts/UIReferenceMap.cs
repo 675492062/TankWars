@@ -9,6 +9,9 @@ public class UIReferenceMap {
     private Dictionary<string, GameObject> brickWallContainers = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> BrickWallContainers { get { return brickWallContainers; } }
 
+	private Dictionary<string,GameObject> coinPacks = new Dictionary<string, GameObject> ();
+	public Dictionary<string,GameObject> CoinPacks { get { return coinPacks; } }
+
 	private List<GameObject> players = new List<GameObject>();
 
 	public List<GameObject> Players { get { return players; } }

@@ -43,6 +43,8 @@ namespace GameClient.GameDomain
         public void Grab()
         {
             this.grabbed = true;
+
+
         }
 
         //The lifetime of life-pack

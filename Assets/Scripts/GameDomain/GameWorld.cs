@@ -12,6 +12,8 @@ namespace GameClient.GameDomain
     */
     class GameWorld
     {
+	
+
         /*
         Has the GameWorld been started?
         */
@@ -101,7 +103,7 @@ namespace GameClient.GameDomain
         {
             foreach(LifePack lifePack in lifePacks)
             {
-                lifePack.AdvanceFrame();
+				lifePack.AdvanceFrame();
             }
             foreach (Coin coin in coins)
             {
@@ -146,6 +148,7 @@ namespace GameClient.GameDomain
         public event NegativeHonourEventHandler NegativeHonour;
         public delegate void NegativeHonourEventHandler(object Sender, NegativeHonourMessage.NegativeHonourReason reason);
 
+
         private GameWorld()
         {
             
@@ -160,6 +163,48 @@ namespace GameClient.GameDomain
                 return instance;
             }
         }
+
+		public delegate void CoinPackAddedEventHandler (object Sender, Coin coin);
+		public event CoinPackAddedEventHandler CoinPackAdded;
+
+
+		public void NotifyCoinPackAdded(Coin c)
+		{
+			CoinPackAddedEventHandler handler = CoinPackAdded;
+			if (handler != null)
+			{
+				handler(this, c);
+			}
+		}
+
+
+		public delegate void CoinPackExpiredEventHandler (object Sender, Coin coin);
+		public event CoinPackExpiredEventHandler CoinPackExpired;
+		
+		
+		public void NotifyCoinPackExpired (Coin c)
+		{
+			CoinPackExpiredEventHandler handler = CoinPackExpired;
+			if (handler != null)
+			{
+				handler(this, c);
+			}
+		}
+
+
+		public delegate void CoinPackGrabbedEventHandler (object Sender, Coin coin, PlayerDetails p);
+		public event CoinPackGrabbedEventHandler CoinPackGrabbed;
+
+
+		public void NotifyCoinPackGrabbed (Coin c,PlayerDetails p)
+		{
+			CoinPackGrabbedEventHandler handler = CoinPackGrabbed;
+			if (handler != null)
+			{
+				handler(this, c,p);
+			}
+		}
+
         /*
         Notifies the gameworld that a negative honour has occured
         */

@@ -53,30 +53,39 @@ namespace GameClient.GameDomain
         /*
         Mark the coin as grabbed
         */
-        public void Grab()
+        public void Grab(PlayerDetails p)
         {
             this.grabbed = true;
+			deathReported = true;
+			GameWorld.Instance.NotifyCoinPackGrabbed (this,p);
+
         }
+
+		//set to true, the first time is alive become false
+		private bool deathReported = false;
 
         /*
         Update the coins remaining time
         */
         public void AdvanceFrame()
         {
+			if (deathReported)
+				return;
+
             if (elapsedTime < TimeLimit)
                 elapsedTime+=1000;
 
-            if (IsAlive)
-            {
-                //check whether the lifepack is grabbed by any players
-                foreach (PlayerDetails p in GameWorld.Instance.Players)
-                {
-                    if (p.Position.X == Position.X && p.Position.Y == Position.Y)
-                    {
-                        Grab();
-                    }
-                }
-            }
+            if (IsAlive) {
+				//check whether the lifepack is grabbed by any players
+				foreach (PlayerDetails p in GameWorld.Instance.Players) {
+					if (p.Position.X == Position.X && p.Position.Y == Position.Y) {
+						Grab (p);
+					}
+				}
+			} else {
+				deathReported = true;
+				GameWorld.Instance.NotifyCoinPackExpired(this);
+			}
         }
 
     }

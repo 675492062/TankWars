@@ -22,6 +22,8 @@ namespace GameClient.Network.Messages
         {
             
             GameWorld.Instance.Coins.Add(coin);
+			GameWorld.Instance.NotifyCoinPackAdded (coin);
+
         }
 
         // Textual represnatation of variables for logging purpose
