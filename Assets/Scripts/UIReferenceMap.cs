@@ -12,6 +12,9 @@ public class UIReferenceMap {
 	private Dictionary<string,GameObject> coinPacks = new Dictionary<string, GameObject> ();
 	public Dictionary<string,GameObject> CoinPacks { get { return coinPacks; } }
 
+	private Dictionary<string,GameObject> lifePacks = new Dictionary<string, GameObject> ();
+	public Dictionary<string,GameObject> LifePacks { get { return lifePacks; } }
+
 	private List<GameObject> players = new List<GameObject>();
 
 	public List<GameObject> Players { get { return players; } }

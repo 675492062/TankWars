@@ -12,6 +12,7 @@ namespace GameClient.GameDomain
     */
     public class Coin
     {
+
         public Coordinate Position { get; set; }
 
         public int TimeLimit { get; set; }
@@ -64,6 +65,9 @@ namespace GameClient.GameDomain
 		//set to true, the first time is alive become false
 		private bool deathReported = false;
 
+		public const int DELTA_ELAPSED_TIME = 1000;
+
+
         /*
         Update the coins remaining time
         */
@@ -73,7 +77,7 @@ namespace GameClient.GameDomain
 				return;
 
             if (elapsedTime < TimeLimit)
-                elapsedTime+=1000;
+                elapsedTime+=DELTA_ELAPSED_TIME;
 
             if (IsAlive) {
 				//check whether the lifepack is grabbed by any players

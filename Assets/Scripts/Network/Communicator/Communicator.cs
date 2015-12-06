@@ -162,15 +162,16 @@ namespace GameClient.Network.Communicator
 			private const int PROGRESS_NEW_MESSAGE = 1;
 			private const int PROGRESS_ERROR = 2;
 			
-			private BackgroundWorker backgroundWorker; //background thread used to listen
+
 			private int port; //clients port
-			
+
+			private bool isListening = false;
 			//Is the listener running
 			public bool IsListening
 			{
 				get
 				{
-					return backgroundWorker.IsBusy;
+					return isListening;
 				}
 			}
 			
@@ -194,6 +195,7 @@ namespace GameClient.Network.Communicator
 				//backgroundWorker.RunWorkerAsync(port); //clients port is passed through arguement
 
 				int cPort = port;
+				isListening = true;
 				Loom.RunAsync (() => {
 					BackgroundWorker_DoWork(cPort);
 				});
@@ -202,6 +204,7 @@ namespace GameClient.Network.Communicator
 			private void BackgroundWorker_RunWorkerCompleted()
 			{
 				//For some reason, background worker has finished
+				isListening = false;
 				Debug.WriteLine("Listener has stopped");
 				
 				//call the message received event
@@ -346,7 +349,7 @@ namespace GameClient.Network.Communicator
 			
 			public void StopListener()
 			{
-				backgroundWorker.CancelAsync();
+				throw new NotSupportedException ("In unity, stopping listener is not supported");
 			}
 			
 		}

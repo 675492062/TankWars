@@ -19,6 +19,7 @@ namespace GameClient.Network.Messages
         public override void Execute()
         {
             GameWorld.Instance.LifePacks.Add(lifePack);
+			GameWorld.Instance.NotifyLifePackAdded (lifePack);
         }
 
         // Textual represnatation of variables for logging purpose

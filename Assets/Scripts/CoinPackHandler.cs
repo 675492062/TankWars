@@ -14,7 +14,7 @@ public class CoinPackHandler : MonoBehaviour {
 	{
 		GameObject coinPackObject = UIReferenceMap.Instance.CoinPacks [UIHelper.GenerateKey (coin.Position)];
 		Destroy (coinPackObject);
-
+		UIReferenceMap.Instance.CoinPacks.Remove(UIHelper.GenerateKey (coin.Position));
 	}
 
 	private void HandleCoinPackExpired (object Sender, GameClient.GameDomain.Coin coin)
@@ -36,7 +36,10 @@ public class CoinPackHandler : MonoBehaviour {
 		Transform containerTransform = container.transform;
 		coinPack.transform.SetParent(container.transform, false);
 
-		UIReferenceMap.Instance.CoinPacks.Add (UIHelper.GenerateKey(coin.Position),coinPack);
+		if (UIReferenceMap.Instance.CoinPacks.ContainsKey (UIHelper.GenerateKey (coin.Position))) {
+			removeCoinPack(coin);
+		}
+		UIReferenceMap.Instance.CoinPacks[UIHelper.GenerateKey(coin.Position)] = coinPack;
 	}
 	
 	// Update is called once per frame

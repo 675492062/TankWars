@@ -205,6 +205,49 @@ namespace GameClient.GameDomain
 			}
 		}
 
+
+
+		public delegate void LifePackAddedEventHandler (object Sender, LifePack lifePack);
+		public event LifePackAddedEventHandler LifePackAdded;
+		
+		
+		public void NotifyLifePackAdded(LifePack l)
+		{
+			LifePackAddedEventHandler handler = LifePackAdded;
+			if (handler != null)
+			{
+				handler(this, l);
+			}
+		}
+		
+		
+		public delegate void LifePackExpiredEventHandler (object Sender, LifePack lifePack);
+		public event LifePackExpiredEventHandler LifePackExpired;
+
+		
+		public void NotifyLifePackExpired (LifePack l)
+		{
+			LifePackExpiredEventHandler handler = LifePackExpired;
+			if (handler != null)
+			{
+				handler(this, l);
+			}
+		}
+		
+		
+		public delegate void LifePackGrabbedEventHandler (object Sender, LifePack lifePack, PlayerDetails p);
+		public event LifePackGrabbedEventHandler LifePackGrabbed;
+		
+		
+		public void NotifyLifePackGrabbed (LifePack l,PlayerDetails p)
+		{
+			LifePackGrabbedEventHandler handler = LifePackGrabbed;
+			if (handler != null)
+			{
+				handler(this, l,p);
+			}
+		}
+
         /*
         Notifies the gameworld that a negative honour has occured
         */

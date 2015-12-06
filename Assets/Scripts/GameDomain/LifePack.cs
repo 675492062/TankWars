@@ -37,13 +37,17 @@ namespace GameClient.GameDomain
             }
         }
 
+		private bool deathReported = false;
+
         /*
         Mark the lifepack as grabbed
         */
-        public void Grab()
+        public void Grab(PlayerDetails p)
         {
-            this.grabbed = true;
-
+            
+			this.grabbed = true;
+			deathReported = true;
+			GameWorld.Instance.NotifyLifePackGrabbed (this,p);
 
         }
 
@@ -60,14 +64,19 @@ namespace GameClient.GameDomain
             return builder.ToString();
         }
 
+		public const int DELTA_ELAPSED_TIME = 1000;
+
         /*
         Advance time to next frame. Updating the elapsed time of lifepack.
         Checks whether the lifepack is grabbed at this frame
         */
         public void AdvanceFrame()
         {
+			if (deathReported)
+				return;
+
             if (elapsedTime < TimeLimit)
-                elapsedTime+=1000;
+                elapsedTime+=DELTA_ELAPSED_TIME;
 
             if(IsAlive)
             {
@@ -76,10 +85,13 @@ namespace GameClient.GameDomain
                 {
                     if (p.Position.X==Position.X && p.Position.Y == Position.Y)
                     {
-                        Grab();
+                        Grab(p);
                     }
                 }
-            }
+			} else {
+				deathReported = true;
+				GameWorld.Instance.NotifyLifePackExpired(this);
+			}
         }
     }
 }
