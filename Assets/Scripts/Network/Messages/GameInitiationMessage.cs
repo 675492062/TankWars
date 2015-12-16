@@ -58,6 +58,8 @@ namespace GameClient.Network.Messages
                     //I:P<num>: <Brick x>,<Brick y>;<Brick x>,<Stone x>.<Stone y>;<Stone x>,<Stone y>:<Water x>.<Water y>;<Water x>,<Water y>#
                     //Load map
                     MapDetails mapDetails = new MapDetails();
+					GameWorld.Instance.MyPlayerNumber = (int)Char.GetNumericValue(sections[1][1]);
+
                     
                     string section = sections[2];
                     string[] parameters = Tokenizer.TokernizeParameters(section);

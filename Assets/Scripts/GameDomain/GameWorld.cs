@@ -89,6 +89,8 @@ namespace GameClient.GameDomain
         */
         private List<LifePack> lifePacks = new List<LifePack>();
 
+		public int MyPlayerNumber { get; set; }
+
         //Singleton Instance
         private static GameWorld instance = null;
 
