@@ -2,33 +2,26 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class GUIManager : MonoBehaviour {
+public class ConnectionManager : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	public void Join()
-	{
-		GameClient.Network.Messages.JoinRequestMessage msg = new GameClient.Network.Messages.JoinRequestMessage ();
-		GameClient.Network.Communicator.Communicator.Instance.SendMessage (msg.GenerateStringMessage ());
-		
-	}
-	
-	public void ConnectClick()
-	{
 		GameClient.Network.Communicator.Communicator com = GameClient.Network.Communicator.Communicator.Instance;
 		com.MessageReceived += HandleMessageReceived;
 		com.MessageReceiveError += HandleMessageReceiveError;;
 		com.MessageReceiverStopped += HandleMessageReceiverStopped;;
 		
-		string host = GameObject.Find ("txtHost").GetComponent<Text> ().text;
+		string host = Config.Host;
 		
 		com.Instalatize (new GameClient.Network.Communicator.Communicator.Configuration (7000, host, 6000));
+
+		GameClient.Network.Messages.JoinRequestMessage msg = new GameClient.Network.Messages.JoinRequestMessage ();
+		GameClient.Network.Communicator.Communicator.Instance.SendMessage (msg.GenerateStringMessage ());
+
 		
 	}
 	
+
 	void HandleMessageReceiverStopped (object sender, System.EventArgs e)
 	{
 		Debug.LogError ("Listener Stopped");

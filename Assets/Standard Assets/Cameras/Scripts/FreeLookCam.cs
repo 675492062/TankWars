@@ -66,9 +66,21 @@ namespace UnityStandardAssets.Cameras
             transform.position = Vector3.Lerp(transform.position, m_Target.position, deltaTime*m_MoveSpeed);
         }
 
+		private Boolean rotate = false;
 
         private void HandleRotationMovement()
         {
+			if (Input.GetMouseButtonDown (0)) {
+				rotate = true;
+				Debug.Log("rotate");
+			}
+			if (Input.GetMouseButtonUp (0)) {
+				rotate = false;
+				Debug.Log("Not rotate");
+			}
+
+
+
 			if(Time.timeScale < float.Epsilon)
 			return;
 
@@ -102,13 +114,18 @@ namespace UnityStandardAssets.Cameras
 
 			if (m_TurnSmoothing > 0)
 			{
-				m_Pivot.localRotation = Quaternion.Slerp(m_Pivot.localRotation, m_PivotTargetRot, m_TurnSmoothing * Time.deltaTime);
-				transform.localRotation = Quaternion.Slerp(transform.localRotation, m_TransformTargetRot, m_TurnSmoothing * Time.deltaTime);
+				if(rotate){
+					m_Pivot.localRotation = Quaternion.Slerp(m_Pivot.localRotation, m_PivotTargetRot, m_TurnSmoothing * Time.deltaTime);
+					transform.localRotation = Quaternion.Slerp(transform.localRotation, m_TransformTargetRot, m_TurnSmoothing * Time.deltaTime);
+
+				}
 			}
 			else
 			{
+				if(rotate){
 				m_Pivot.localRotation = m_PivotTargetRot;
 				transform.localRotation = m_TransformTargetRot;
+				}
 			}
         }
     }

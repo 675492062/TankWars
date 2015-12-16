@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using GameClient.GameDomain;
+using UnityEngine;
 
 namespace GameClient.Network.Messages
 {
@@ -16,7 +17,7 @@ namespace GameClient.Network.Messages
         public override void Execute()
         {
             GameWorld.Instance.State = GameWorld.GameWorldState.Finished;
-            
+			Debug.Log ("Game Over");
         }
 
         public override string ToString()

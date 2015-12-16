@@ -29,7 +29,7 @@ public class GameFrameHandler : MonoBehaviour {
 
 			playerGameObject.transform.SetParent(cellTransform, true);
 
-			Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
+			//Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
 
 
 		}
