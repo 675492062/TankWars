@@ -117,6 +117,13 @@ namespace GameClient.GameDomain
                 handler(this, new EventArgs());
             }
 
+			foreach (PlayerDetails p in Players) {
+				if(p.IsShooting)
+				{
+					GameWorld.Instance.NotifyBulletFired(p);
+				}
+			}
+
 
         }
 
@@ -149,6 +156,8 @@ namespace GameClient.GameDomain
         public delegate void NegativeHonourEventHandler(object Sender, NegativeHonourMessage.NegativeHonourReason reason);
 
 
+
+
         private GameWorld()
         {
             
@@ -164,6 +173,17 @@ namespace GameClient.GameDomain
             }
         }
 
+		public delegate void BulletFiredEventHandler(object sender, PlayerDetails shooter);
+		public event BulletFiredEventHandler BulletFired;
+
+		public void NotifyBulletFired(PlayerDetails p)
+		{
+			BulletFiredEventHandler handler = BulletFired;
+			if (handler != null) {
+				handler(this,p);
+			}
+		}
+
 		public delegate void CoinPackAddedEventHandler (object Sender, Coin coin);
 		public event CoinPackAddedEventHandler CoinPackAdded;
 
@@ -176,6 +196,8 @@ namespace GameClient.GameDomain
 				handler(this, c);
 			}
 		}
+
+
 
 
 		public delegate void CoinPackExpiredEventHandler (object Sender, Coin coin);
