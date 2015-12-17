@@ -20,10 +20,10 @@ public class BulletsManager : MonoBehaviour {
 		Vector3 direction = new Vector3 ();
 		Vector3 logicDirection = new Vector3 ();
 		if (dir == GameClient.Foundation.Direction.North) {
-			direction = new Vector3 (0, 0, -1);
+			direction = new Vector3 (0, 0, 1);
 			logicDirection = new Vector3 (0, 0, 1);
 		} else if (dir == GameClient.Foundation.Direction.South) {
-			direction = new Vector3(0,0,1);
+			direction = new Vector3(0,0,-1);
 			logicDirection = new Vector3 (0, 0, -1);
 		}else if (dir == GameClient.Foundation.Direction.West) {
 			direction = new Vector3 (-1, 0, 0);
