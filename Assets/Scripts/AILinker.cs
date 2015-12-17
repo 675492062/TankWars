@@ -25,22 +25,33 @@ public class AILinker : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		Text t = aiIndicator.GetComponent<Text> ();
 		if (Input.GetKeyDown ("1")) {
-			Text t = aiIndicator.GetComponent<Text> ();
 			UseAI = !UseAI;
 			if (UseAI) {
-				t.text = "ON";
+				if(aiDriver.flag==0)
+					t.text = "ON - Follow Tank 1";
+				else if(aiDriver.flag==1)
+					t.text = "ON - Follow Coin Packs";
+				else if(aiDriver.flag==2)
+					t.text = "ON - Follow Life Packs";
 			} else {
 				t.text = "OFF";
 			}
 		} else if (Input.GetKeyDown ("2")) {
 			//switch to mode 2
+			aiDriver.flag = 0;
+			t.text = "ON - Follow Tank 1";
 		}
 		else if (Input.GetKeyDown ("3")) {
 			//switch to mode 3
+			aiDriver.flag = 1;
+			t.text = "ON - Follow Coin Packs";
 		}
 		else if (Input.GetKeyDown ("4")) {
 			//switch to mode 4
+			aiDriver.flag = 2;
+			t.text = "ON - Follow Life Packs";
 		}
 	}
 }

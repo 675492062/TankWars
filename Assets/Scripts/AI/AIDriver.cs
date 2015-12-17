@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using System.Text;
-
+using System.Linq;
 using GameClient.GameDomain;
 using GameClient.Network.Messages;
 using GameClient.Network.Communicator;
@@ -13,11 +11,18 @@ namespace GameClient.AI
     class AIDriver
     {
         private bool[,] map;
+        int width;
+        int height;
         private SearchParameters searchParameters;
         PathFinder pathFinder;
         List<Coordinate> path;
         ClientMessage msg;
-
+        Coordinate startPoint = new Coordinate();
+        Coordinate endPoint = new Coordinate();
+        public int flag = 0;
+        int nowAtPath = 0;
+        int coinToFollow = 0;
+        
         public AIDriver()
         {
             InitializeMap();
@@ -27,45 +32,36 @@ namespace GameClient.AI
         {
             if (GameWorld.Instance.State == GameWorld.GameWorldState.Running)
             {
-                Coordinate startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);
-
-                // Follow player 1 assuming that I'm player 0
-                Coordinate endPoint = new Coordinate(GameWorld.Instance.Players[1].Position.X, GameWorld.Instance.Players[1].Position.Y);
-
-                // Follow coin pack
-               // Point endPoint = new Point();
-
-                setBarriers();
-                setEndPoints(startPoint, endPoint);
-                pathFinder = new PathFinder(searchParameters);
-                path = pathFinder.FindPath();
-                
-                if (path.Count>1)
+                if (flag == 0) // Follow player 1 assuming that I'm player 0
                 {
-                    if(endPoint.X==path[1].X && endPoint.Y == path[1].Y)
-                    {
-                        msg = new ShootMessage();
-                        Communicator.Instance.SendMessage(msg.GenerateStringMessage());
-                    }
-                    else
-                    {
-                        msg = new PlayerMovementMessage(decodeDirection(startPoint, path[1]));
-
-                        if (GameWorld.Instance.InputAllowed)
-                        {
-                            Communicator.Instance.SendMessage(msg.GenerateStringMessage());
-                            GameClient.GameDomain.GameWorld.Instance.InputAllowed = false;
-                        }
-                    }
-                    
+                    followTank(1);
+                }
+                else if(flag == 1) // Follow latest coin pack
+                {
+                    followCoin();   
+                }
+                else if(flag == 2) // Follow latest life pack
+                {
+                    followLifePack();
                 }
 
-//                ShowRoute("The algorithm should find a direct path without obstacles:", path);
-                Console.WriteLine();
+                if (path!=null && path.Count > nowAtPath)
+                {
+                    if (GameWorld.Instance.InputAllowed)
+                    {
+                        msg = new PlayerMovementMessage(decodeDirection(startPoint, path[nowAtPath++]));
+                        Communicator.Instance.SendMessage(msg.GenerateStringMessage());
+                        GameClient.GameDomain.GameWorld.Instance.InputAllowed = false;
+
+                        // Print the found path in th console 
+                        ShowRoute("The algorithm should find a direct path without obstacles:", path);
+                        Console.WriteLine();
+                    }
+                }
             }
         }
 
-        /*private void ShowRoute(string title, IEnumerable<Coordinate> path)
+        private void ShowRoute(string title, IEnumerable<Coordinate> path)
         {
             Console.WriteLine("{0}\r\n", title);
             for (int y = 0; y < this.map.GetLength(1); y++) // Invert the Y-axis so that coordinate 0,0 is shown in the bottom-left
@@ -91,11 +87,13 @@ namespace GameClient.AI
 
                 Console.WriteLine();
             }
-        }*/
+        }
         
         private void InitializeMap()
         {
             this.map = new bool[10, 10];
+            this.width = map.GetLength(0);
+            this.height = map.GetLength(1);
             for (int y = 0; y < 10; y++)
                 for (int x = 0; x < 10; x++)
                     map[x, y] = true;
@@ -117,7 +115,7 @@ namespace GameClient.AI
             Coordinate[] stones = mapDetails.Stone;
             Coordinate[] water = mapDetails.Water;
 
-            foreach(Coordinate coordinate in bricks)
+            foreach (Coordinate coordinate in bricks)
             {
                 map[coordinate.X, coordinate.Y] = false;
             }
@@ -132,6 +130,41 @@ namespace GameClient.AI
                 map[coordinate.X, coordinate.Y] = false;
             }
 
+            //bool[,] tmpMap = new bool[this.width, this.height];
+
+            //for (int y = 0; y < this.height; y++)
+            //{
+            //    for (int x = 0; x < this.width; x++)
+            //    {
+            //        if ((x + 1 < this.width && !map[x + 1, y]) && (y + 1 < this.height && !map[x, y + 1]))
+            //        {
+            //            tmpMap[x + 1, y + 1] = false;
+            //        }
+            //        if ((x + 1 < this.width && !map[x + 1, y]) && (y - 1 > -1 && !map[x, y - 1]))
+            //        {
+            //            tmpMap[x + 1, y - 1] = false;
+            //        }
+            //        if ((x - 1 < -1 && !map[x - 1, y]) && (y - 1 < -1 && !map[x, y - 1]))
+            //        {
+            //            tmpMap[x - 1, y - 1] = false;
+            //        }
+            //        if ((x - 1 < -1 && !map[x - 1, y]) && (y + 1 < this.height && !map[x, y + 1]))
+            //        {
+            //            tmpMap[x - 1, y + 1] = false;
+            //        }
+            //    }
+            //}
+
+            //for (int y = 0; y < this.height; y++)
+            //{
+            //    for (int x = 0; x < this.width; x++)
+            //    {
+            //        if (!tmpMap[x, y])
+            //        {
+            //            this.map[x, y] = false;
+            //        }
+            //    }
+            //}
         }
 
         public Direction decodeDirection(Coordinate source, Coordinate destination)
@@ -183,6 +216,66 @@ namespace GameClient.AI
             else //8
             {
                 return Direction.West;
+            }
+        }
+
+        public void findPath()
+        {
+            setBarriers();
+            setEndPoints(startPoint, endPoint);
+            pathFinder = new PathFinder(searchParameters);
+            path = pathFinder.FindPath();
+            nowAtPath = 0;
+        }
+
+        public void followTank(int tankNumber)
+        {
+            startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);
+
+            if (GameWorld.Instance.Players[tankNumber].Health>0)
+            {
+                endPoint = new Coordinate(GameWorld.Instance.Players[tankNumber].Position.X, GameWorld.Instance.Players[tankNumber].Position.Y);
+            }
+            findPath();
+        }
+
+        public void followCoin()
+        {
+            startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);
+            List<Coin> coinList = GameWorld.Instance.Coins;
+            if(coinList.Count>coinToFollow && coinList[coinToFollow].IsAlive)
+            {
+                endPoint = new Coordinate(coinList[coinToFollow].Position.X, coinList[coinToFollow].Position.Y);
+                findPath();
+            }
+            else if (coinList.Count > coinToFollow && !coinList[coinToFollow].IsAlive)
+            {
+                coinToFollow++;
+                followCoin();
+            }
+            else
+            {
+             //   Console.WriteLine("3 >>>>>>>>>>>>>>");
+            }
+        }
+
+        public void followLifePack()
+        {
+            startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);
+            List<LifePack> lifePackList = GameWorld.Instance.LifePacks;
+            if (lifePackList.Count > coinToFollow && lifePackList[coinToFollow].IsAlive)
+            {
+                endPoint = new Coordinate(lifePackList[coinToFollow].Position.X, lifePackList[coinToFollow].Position.Y);
+                findPath();
+            }
+            else if (lifePackList.Count > coinToFollow && !lifePackList[coinToFollow].IsAlive)
+            {
+                coinToFollow++;
+                followLifePack();
+            }
+            else
+            {
+                //   Console.WriteLine("3 >>>>>>>>>>>>>>");
             }
         }
     }

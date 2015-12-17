@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-using System.Text;
-
-using GameClient.Foundation;
+﻿using GameClient.Foundation;
 
 namespace GameClient.AI
 {

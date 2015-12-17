@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using System.Text;
-
+﻿using System.Collections.Generic;
 using GameClient.Foundation;
 
 namespace GameClient.AI
@@ -106,6 +102,9 @@ namespace GameClient.AI
                 if (!node.IsWalkable)
                     continue;
 
+                if (!this.nodes[x, fromNode.Location.Y].IsWalkable && !this.nodes[fromNode.Location.X, y].IsWalkable)
+                    continue;
+
                 // Ignore already-closed nodes
                 if (node.State == NodeState.Closed)
                     continue;
@@ -113,7 +112,7 @@ namespace GameClient.AI
                 // Already-open nodes are only added to the list if their G-value is lower going via this route.
                 if (node.State == NodeState.Open)
                 {
-                    float traversalCost = Node.GetTraversalCost(node.Location, node.ParentNode.Location);
+                    float traversalCost = Node.GetTraversalCost(node.Location, fromNode.Location);
                     float gTemp = fromNode.G + traversalCost;
                     if (gTemp < node.G)
                     {
