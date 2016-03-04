@@ -10,7 +10,8 @@ public class AILinker : MonoBehaviour {
 	private GameClient.AI.AIDriver aiDriver;
 	// Use this for initialization
 	void Start () {
-		aiDriver = new GameClient.AI.AIDriver ();
+
+		aiDriver = GameClient.AI.AIDriver.Instance;
 		GameClient.GameDomain.GameWorld.Instance.FrameAdvanced += HandleFrameAdvanced;
 		
 	}

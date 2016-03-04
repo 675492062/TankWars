@@ -14,7 +14,16 @@ namespace GameClient.GameDomain
         //Direction the player is heading at
         public Direction Direction { get; set; }
 
-        public string Name { get; set; }
+		private String name;
+		public string Name {
+			get { return this.name; }
+			set { this.name = value;
+				Number = Convert.ToInt32(value.Substring(1));
+			}
+		}
+
+
+		public int Number { get; set; }
 
         public Coordinate Position { get; set; }
         //Has the player fired in current frame

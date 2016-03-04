@@ -29,6 +29,12 @@ public class GameFrameHandler : MonoBehaviour {
 
 			playerGameObject.transform.SetParent(cellTransform, true);
 
+			if(playerDetails.Health <= 0)
+			{
+				playerGameObject.SetActive(false);
+				//Debug.Log("A player has died");
+			}
+
 			//Debug.Log("Direction " + UIHelper.DirectionToAngle(playerDetails.Direction).ToString());
 
 

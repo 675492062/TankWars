@@ -59,7 +59,7 @@ public class BulletsManager : MonoBehaviour {
 			b.BulletObject.transform.Translate(uiSpeed);
 			b.LogicPosition = b.LogicPosition + b.LogicDirection * LogicMovementSpeed * Time.deltaTime;
 
-
+			//Debug.Log("Bullet Updated");
 
 		}
 	}

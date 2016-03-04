@@ -82,7 +82,7 @@ namespace GameClient.GameDomain
             if (IsAlive) {
 				//check whether the lifepack is grabbed by any players
 				foreach (PlayerDetails p in GameWorld.Instance.Players) {
-					if (p.Position.X == Position.X && p.Position.Y == Position.Y) {
+					if (p.Position.X == Position.X && p.Position.Y == Position.Y && p.Health > 0) {
 						Grab (p);
 					}
 				}
