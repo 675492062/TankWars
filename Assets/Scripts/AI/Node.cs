@@ -9,14 +9,18 @@ namespace GameClient.AI
         
         public Coordinate Location { get; private set; }
         
+        // Whether a tank is allowed to go to this cell
         public bool IsWalkable { get; set; }
         
+        //G is the cost from starting point to this node
         public float G { get; private set; }
         
+        //H is the cost from this node to end point
         public float H { get; private set; }
         
         public NodeState State { get; set; }
         
+        //F = G + H
         public float F
         {
             get { return this.G + this.H; }

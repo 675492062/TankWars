@@ -2,13 +2,13 @@
 {
     public enum NodeState
     {
-        // The node has not yet been considered in any possible paths
+        // The node has not been visited yet.
         Untested,
         
-        /// The node has been identified as a possible step in a path
+        /// The node is a possible path.
         Open,
 
-        /// The node has already been included in a path and will not be considered again
+        /// The node has visited once and will not be visited again.
         Closed
     }
 }

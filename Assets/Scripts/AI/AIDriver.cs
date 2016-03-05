@@ -8,20 +8,19 @@ using GameClient.Foundation;
 
 namespace GameClient.AI
 {
+    //This class is singleton
+    //This class is responsible for all movements of the tank.
+    //This also calls the shooter class.
+
     class AIDriver
     {
         private bool[,] map;
         int width;
         int height;
-        //private SearchParameters searchParameters;
-        //PathFinder pathFinder;
         List<PathFinder> shortestPathFinders;
         List<Coordinate> path;
         ClientMessage msg;
         Coordinate startPoint = new Coordinate();
-        Coordinate endPoint = new Coordinate();
-        public int flag = 0;
-        int nowAtPath = 0;
         bool isAllDie = false;
 
         private static AIDriver instance = null;
@@ -61,7 +60,7 @@ namespace GameClient.AI
                 //Task taskLifePack = Task.Factory.StartNew(() => this.nearsetLifePack());
                 //Task.WaitAll(taskTank, taskCoin, taskLifePack);
 
-                //Using single thread
+                /* Using single thread */
                 Shooter shooter = new Shooter(this.map);
                 shooter.run();
                 this.nearestTank();
@@ -74,9 +73,12 @@ namespace GameClient.AI
                         break;
                     }
                 }
+                //Life packs are followed only if opponents are remaining.
                 if(!isAllDie)
                     this.nearsetLifePack();
 
+                //shortestPathFinders contain the nearest tank, neares coin and the nearest life pack
+                //AI chooses nearest one from all three objects
                 shortestPathFinders.Sort((pathFinder1, pathFinder2) => pathFinder1.TotalCost.CompareTo(pathFinder2.TotalCost));
                 if (shortestPathFinders.Count > 0)
                 {
@@ -93,15 +95,16 @@ namespace GameClient.AI
             }
         }
 
+        //Move the tank by one cell
         public void move()
         {
             msg = new PlayerMovementMessage(decodeDirection(startPoint, path[0]));
             Communicator.Instance.SendMessage(msg.GenerateStringMessage());
             GameClient.GameDomain.GameWorld.Instance.InputAllowed = false;
-            //Console.WriteLine("Moved >>>>>>>>>>>>>>");
-            ShowRoute("Current route", path);
+            //ShowRoute("Current route", path);
         }
 
+        //Prints the route for testing purpose
         private void ShowRoute(string title, IEnumerable<Coordinate> path)
         {
             Console.WriteLine("{0}\r\n", title);
@@ -143,7 +146,7 @@ namespace GameClient.AI
             var endLocation = end;
             searchParameters = new SearchParameters(startLocation, endLocation, map);
         }
-
+        
         private void setBarriers()
         {
             GameWorld gameWorld = GameWorld.Instance;
@@ -204,6 +207,7 @@ namespace GameClient.AI
             //}
         }
 
+        //Returns the direction when start and end points are given
         public Direction decodeDirection(Coordinate source, Coordinate destination)
         {
             // 1 2 3
@@ -268,6 +272,7 @@ namespace GameClient.AI
             }
         }
 
+        //Whether a tank is allowed to go to that cell
         public bool isWalkableCell(int x, int y)
         {
             if (x >= 0 && x < this.width && y >= 0 && y < this.height && this.map[x, y])
@@ -284,6 +289,7 @@ namespace GameClient.AI
             return pathFinder;
         }
 
+        //Find the nearest tank to my tank
         public void nearestTank()
         {
             PlayerDetails[] players = GameWorld.Instance.Players;
@@ -301,7 +307,7 @@ namespace GameClient.AI
                 shortestPathFinders.Add(pathFinders[0]);
         }
 
-
+        //Find the nearest coin to my tank
         public void nearestCoin()
         {
             Coordinate startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);
@@ -328,6 +334,7 @@ namespace GameClient.AI
                 shortestPathFinders.Add(pathFinders[0]);
         }
 
+        //Find the nearest life pack to my tank
         public void nearsetLifePack()
         {
             Coordinate startPoint = new Coordinate(GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.X, GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber].Position.Y);

@@ -13,7 +13,9 @@ namespace GameClient.AI
         private Node endNode;
         private SearchParameters searchParameters;
         
+        //Total cost from start to end point
         public float TotalCost { get; set; }
+    
         public List<Coordinate> Path { get; set; }
         
         public PathFinder(SearchParameters searchParameters)
@@ -31,7 +33,7 @@ namespace GameClient.AI
             bool success = Search(startNode);
             if (success)
             {
-                // If a path was found, follow the parents from the end node to build a list of locations
+                //After founding a path go in reverse order to build the path starting from the end point and using parent nodes.
                 Node node = this.endNode;
                 this.TotalCost = this.endNode.F;
                 while (node.ParentNode != null)
@@ -39,11 +41,9 @@ namespace GameClient.AI
                     path.Add(node.Location);
                     node = node.ParentNode;
                 }
-
-                // Reverse the list so it's in the correct order when returned
+                
                 path.Reverse();
             }
-
             this.Path = path;
         }
         
@@ -63,28 +63,26 @@ namespace GameClient.AI
         
         private bool Search(Node currentNode)
         {
-            // Set the current node to Closed since it cannot be traversed more than once
             currentNode.State = NodeState.Closed;
             List<Node> nextNodes = GetAdjacentWalkableNodes(currentNode);
-
-            // Sort by F-value so that the shortest possible routes are considered first
+            
             nextNodes.Sort((node1, node2) => node1.F.CompareTo(node2.F));
             foreach (var nextNode in nextNodes)
             {
-                // Check whether the end node has been reached
+                // Check whether the end is included in the adjacent set of nodes.
                 if ((nextNode.Location.X == this.endNode.Location.X) && (nextNode.Location.Y == this.endNode.Location.Y))
                 {
                     return true;
                 }
                 else
                 {
-                    // If not, check the next set of nodes
-                    if (Search(nextNode)) // Note: Recurses back into Search(Node)
+                    // If not, check the next set of nodes using recursion.
+                    if (Search(nextNode))
                         return true;
                 }
             }
 
-            // The method returns false if this path leads to be a dead end
+            // Method will return false if a path cannot be found
             return false;
         }
         
@@ -98,7 +96,7 @@ namespace GameClient.AI
                 int x = location.X;
                 int y = location.Y;
 
-                // Stay within the grid's boundaries
+                // Check whether the coordinates are within the boundaries
                 if (x < 0 || x >= this.width || y < 0 || y >= this.height)
                     continue;
 

@@ -9,6 +9,8 @@ using GameClient.Foundation;
 
 namespace GameClient.AI
 {
+    // This class is responsible for all the shootings
+
     class Shooter
     {
         private bool[,] map;
@@ -23,7 +25,6 @@ namespace GameClient.AI
 
         public void run()
         {
-            //Console.WriteLine("Shot Run >>>>>>>>>>>>>>");
             isShoot = false;
             setMap();
             PlayerDetails me = GameWorld.Instance.Players[GameWorld.Instance.MyPlayerNumber];
@@ -99,6 +100,7 @@ namespace GameClient.AI
             }
         }
 
+        //Shoot a bullet in the currently faced direction
         public static void shoot()
         {
             ClientMessage msg = new ShootMessage();
@@ -107,19 +109,11 @@ namespace GameClient.AI
             AIDriver.Instance.IsFollow = false;
         }
 
+        //Intialize the map to all zeros
+        //Tank = 2
+        //Stone = 1 
         public void setMap()
         {
-            //for(int y = 0; y < noMap.GetLength(0); y++)
-            //{
-            //    for(int x = 0; x < noMap.GetLength(1); x++)
-            //    {
-            //        if (map[x, y])
-            //            noMap[x, y] = 1;
-            //        else
-            //            noMap[x, y] = 0;
-            //    }
-            //}
-
             for (int y = 0; y < noMap.GetLength(0); y++)
             {
                 for (int x = 0; x < noMap.GetLength(1); x++)
