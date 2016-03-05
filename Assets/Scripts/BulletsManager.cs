@@ -6,6 +6,8 @@ public class BulletsManager : MonoBehaviour {
 	public float UIMovementSpeed = 3;
 	public float LogicMovementSpeed = 3;
 
+	public AudioClip shootingClip;
+
 	private List<BulletDetails> bullets = new List<BulletDetails>();
 	private List<BulletDetails> killedBullets = new List<BulletDetails>();
 	// Use this for initialization
@@ -49,6 +51,7 @@ public class BulletsManager : MonoBehaviour {
 
 		BulletDetails b = new BulletDetails (bulletObject, direction, logicDirection, new Vector3(shooter.Position.X + 0.5f,0,shooter.Position.Y + 0.5f),shooter);
 		bullets.Add (b);
+
 
 	}
 	
