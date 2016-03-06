@@ -63,8 +63,6 @@ namespace GameClient.AI
                 /* Using single thread */
                 Shooter shooter = new Shooter(this.map);
                 shooter.run();
-                this.nearestTank();
-                this.nearestCoin();
                 foreach(PlayerDetails player in GameWorld.Instance.Players)
                 {
                     if (player.Health > 0)
